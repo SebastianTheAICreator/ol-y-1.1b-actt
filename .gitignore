@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Model artifacts
+*.bin
+*.safetensors
+*.pt
+*.pth
+checkpoints/
+outputs/
+runs/
+wandb/
+
+# Data
+data/*.json
+data/*.jsonl
+data/*.txt
+data/*.csv
+!data/.gitkeep
+
+# Tokenizer artifacts
+oly/tokenizer/trained/
+*.model
+*.vocab
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.key
+api_keys.json
+
+# Claude Code local settings
+.claude/

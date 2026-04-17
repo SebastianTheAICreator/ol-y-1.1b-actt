@@ -1,0 +1,25 @@
+{
+    "model_type": "claude_act",
+    "model_name": "Claude-ACTT",
+    "api": {
+        "model": "claude-sonnet-4-5-20250929",
+        "max_tokens": 4096,
+        "temperature": 0.7
+    },
+    "act": {
+        "enabled": true,
+        "num_emotions": 17,
+        "emotion_labels": [
+            "happy", "sad", "angry", "surprised", "curious",
+            "awkward", "question", "think", "neutral",
+            "hopeful", "nostalgic", "regret",
+            "grateful", "relieved",
+            "emptiness",
+            "reflective", "serenity"
+        ],
+        "intensity_range": [0.1, 1.0],
+        "max_composite_components": 5,
+        "enforcement_method": "prefill",
+        "prefill_template": "<|ACT:\"emotion\":[{\"name\":\""
+    }
+}

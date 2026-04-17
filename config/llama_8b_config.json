@@ -1,0 +1,43 @@
+{
+    "model_type": "llama_act",
+    "model_name": "Llama-3.1-8B-ACTT",
+    "base_model": "meta-llama/Llama-3.1-8B",
+    "act": {
+        "enabled": true,
+        "num_emotions": 17,
+        "emotion_labels": [
+            "happy", "sad", "angry", "surprised", "curious",
+            "awkward", "question", "think", "neutral",
+            "hopeful", "nostalgic", "regret",
+            "grateful", "relieved",
+            "emptiness",
+            "reflective", "serenity"
+        ],
+        "intensity_range": [0.1, 1.0],
+        "max_composite_components": 5,
+        "act_hidden_size": 1024,
+        "loss_weights": {
+            "structural": 2.0,
+            "label": 1.5,
+            "response": 1.0
+        }
+    },
+    "training": {
+        "method": "qlora",
+        "lora_r": 16,
+        "lora_alpha": 32,
+        "lora_dropout": 0.05,
+        "target_modules": ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+        "batch_size": 1,
+        "gradient_accumulation_steps": 16,
+        "learning_rate": 2e-4,
+        "weight_decay": 0.01,
+        "warmup_steps": 100,
+        "max_steps": 10000,
+        "fp16": true,
+        "gradient_checkpointing": true,
+        "load_in_4bit": true,
+        "bnb_4bit_compute_dtype": "float16",
+        "bnb_4bit_quant_type": "nf4"
+    }
+}
