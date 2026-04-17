@@ -147,7 +147,10 @@ Where λ₁=2.0, λ₂=1.5, λ₃=1.0 — structural compliance is highest prior
 
 ## License
 
-MIT License — see [LICENSE](LICENSE)
+Custom proprietary license — copying, redistribution, sale, or claiming this
+code as your own is prohibited without prior written permission. ACT materials
+that are explicitly attributed to an external ACT source remain excluded from
+this ownership claim and follow their original terms. See [LICENSE](LICENSE).
 
 ## Reference
 

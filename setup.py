@@ -9,7 +9,7 @@ setup(
     version="1.0.0",
     description="Ol-y 1.1B Transformer with Affective Communication Tokens (ACT)",
     author="Ol-y Project",
-    license="MIT",
+    license="Proprietary",
     packages=find_packages(),
     python_requires=">=3.9",
     install_requires=[

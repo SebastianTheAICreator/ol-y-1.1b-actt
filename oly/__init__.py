@@ -1,5 +1,5 @@
 # Ol-y 1.1B ACTT - Affective Communication Token Transformer
-# MIT License | 2026
+# Proprietary License | 2026
 
 from oly.model.transformer import OlyModel, OlyForCausalLM
 from oly.act.act_token import ACTToken, CompositeACT

@@ -1,21 +1,62 @@
-MIT License
+Ol-y Proprietary License
 
 Copyright (c) 2026 Ol-y Project
+All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. Scope
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+This repository and all original source code, model logic, tests, scripts,
+documentation, and related assets included in it (collectively, the
+"Software") are proprietary and protected by copyright.
+
+This license does not claim ownership over ACT concepts, schemas, labels,
+taxonomies, excerpts, or other materials that are explicitly attributed to an
+external ACT paper, ACT sheet, specification, or other third-party source
+("Excluded ACT Materials"). Those materials remain subject to the rights of
+their respective owners and any separate terms that apply to them.
+
+2. No Copying, Redistribution, or Sale
+
+Without prior written permission from the copyright holder, you may not:
+
+- copy, reproduce, mirror, or redistribute the Software in whole or in part;
+- publish, sublicense, rent, lease, lend, or sell the Software;
+- include the Software in a paid product, service, dataset, or offering;
+- create or distribute derivative works based on the Software;
+- use the Software for commercial exploitation or monetization.
+
+3. No False Authorship or Rebranding
+
+You may not remove or alter copyright notices, authorship notices, or
+attribution notices. You may not claim that the Software, or any substantial
+portion of it, is your own code, your own original work, or a project authored
+by you.
+
+4. Limited Review Permission
+
+If you have been given access to the Software by the copyright holder, you may
+view and privately review it only for personal evaluation, research, or
+collaboration with the copyright holder. No broader license or transfer of
+rights is granted.
+
+5. Excluded ACT Materials
+
+Nothing in this license grants rights in materials that are part of the
+Excluded ACT Materials, and nothing in this license restricts rights that the
+copyright holder does not own in those materials. If you use any Excluded ACT
+Materials, you are responsible for complying with the original source terms and
+applicable law.
+
+6. Reservation of Rights
+
+All rights not expressly granted by this license are reserved by the copyright
+holder.
+
+7. No Warranty
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM,
+OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OF THE SOFTWARE.
