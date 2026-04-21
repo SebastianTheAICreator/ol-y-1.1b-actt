@@ -1,0 +1,22 @@
+{
+  "default": "q4_K_M",
+  "presets": {
+    "q4_K_M": {
+      "target": "local default",
+      "ollama_create_arg": "--quantize q4_K_M",
+      "notes": "Balanced memory and quality for small local GPUs."
+    },
+    "q5_K_M": {
+      "target": "quality preferred",
+      "ollama_create_arg": "--quantize q5_K_M",
+      "notes": "Use when q4_K_M feels too compressed and RAM/VRAM allows it."
+    },
+    "q8_0": {
+      "target": "evaluation",
+      "ollama_create_arg": "--quantize q8_0",
+      "notes": "Higher memory footprint; useful for checking quantization loss."
+    }
+  },
+  "modelfile": "Modelfile.optimized",
+  "credit": "Modelfile optimization roadmap by Sakishimiro"
+}

@@ -493,6 +493,11 @@ class OlyForCausalLM(nn.Module):
         else:
             self.act_head = None
 
+        # Optional persistent emotional memory. This is not required for plain
+        # forward/generation, but lets runtime callers keep EMA state across
+        # sessions without changing the core model weights.
+        self.emotional_memory = None
+
         # Log parameter count
         total_params = sum(p.numel() for p in self.parameters())
         trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
@@ -613,6 +618,47 @@ class OlyForCausalLM(nn.Module):
                 return self.act_head(hidden_states, attention_mask)
         return {}
 
+    def set_emotional_memory(self, memory) -> None:
+        """Attach an EmotionalMemoryEMA instance for generation-time updates."""
+        self.emotional_memory = memory
+
+    def _update_emotional_memory(
+        self,
+        act_result: Optional[Dict[str, Any]],
+        emotional_memory=None,
+        session_id: Optional[str] = None,
+    ) -> Optional[Dict[str, Any]]:
+        """Update attached EMA memory from ACT/probe probabilities."""
+        memory = emotional_memory if emotional_memory is not None else self.emotional_memory
+        if memory is None or not act_result:
+            return None
+
+        emotion_probs = act_result.get("emotion_probs")
+        if emotion_probs is None:
+            return None
+
+        if isinstance(emotion_probs, torch.Tensor):
+            from oly.act.act_token import EMOTION_LABELS
+            probs = emotion_probs[0].detach().float().cpu().tolist()
+            distribution = {
+                emotion: probs[idx]
+                for idx, emotion in enumerate(EMOTION_LABELS)
+                if idx < len(probs)
+            }
+        else:
+            distribution = emotion_probs
+
+        value = memory.update_from_probe_distribution(
+            distribution,
+            session_id=session_id,
+            metadata={"source": "oly_generate"},
+        )
+        return {
+            "value": value,
+            "tone": memory.tone,
+            "sessions": memory.sessions,
+        }
+
     @torch.no_grad()
     def generate(
         self,
@@ -622,6 +668,9 @@ class OlyForCausalLM(nn.Module):
         top_p: float = 0.9,
         top_k: int = 50,
         emit_act: bool = True,
+        emotional_memory=None,
+        memory_session_id: Optional[str] = None,
+        update_memory: bool = True,
     ) -> Dict[str, Any]:
         """Generate text with optional ACT token emission.
 
@@ -636,6 +685,9 @@ class OlyForCausalLM(nn.Module):
             top_p: nucleus sampling threshold
             top_k: top-k sampling threshold
             emit_act: whether to produce ACT token before the response
+            emotional_memory: optional EmotionalMemoryEMA to update from ACT state
+            memory_session_id: optional session ID stored in memory history
+            update_memory: whether to update attached/provided memory
 
         Returns:
             Dictionary with generated_ids, act_token (if emit_act)
@@ -648,6 +700,15 @@ class OlyForCausalLM(nn.Module):
         act_result = None
         if emit_act and self.act_head is not None:
             act_result = self.call_act(input_ids)
+        memory_result = (
+            self._update_emotional_memory(
+                act_result,
+                emotional_memory=emotional_memory,
+                session_id=memory_session_id,
+            )
+            if update_memory
+            else None
+        )
 
         # Step 2: Autoregressive generation
         generated = input_ids
@@ -691,6 +752,7 @@ class OlyForCausalLM(nn.Module):
         return {
             "generated_ids": generated,
             "act_result": act_result,
+            "emotional_memory": memory_result,
         }
 
     def count_parameters(self) -> Dict[str, int]:

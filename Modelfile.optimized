@@ -1,0 +1,31 @@
+# Ol-y 1.1B ACTT optimized Ollama Modelfile
+#
+# Build a quantized runtime artifact from a GGUF export:
+#   ollama create oly-1.1b-actt-q4 -f Modelfile.optimized --quantize q4_K_M
+#
+# Use q4_K_M as the default local preset. Move to q5_K_M if quality loss is too
+# visible and VRAM/RAM allows it.
+
+FROM ./outputs/gguf/oly-1.1b-actt.gguf
+
+PARAMETER num_ctx 2048
+PARAMETER num_batch 128
+PARAMETER temperature 0.7
+PARAMETER top_p 0.9
+PARAMETER top_k 50
+PARAMETER repeat_penalty 1.08
+PARAMETER stop "<|endoftext|>"
+
+SYSTEM """
+You are Ol-y with ACT emotional-state awareness.
+Before each assistant response, emit exactly one ACT token:
+<|ACT:"emotion":[{"name":"LABEL","intensity":VALUE}]|>
+Use the internal ACT/probe state as the source of the label rather than only the
+surface wording of the conversation.
+"""
+
+TEMPLATE """
+{{ if .System }}{{ .System }}
+{{ end }}User: {{ .Prompt }}
+Assistant:
+"""

@@ -1,0 +1,50 @@
+Ol-y ACT Roadmap
+Credit: Sakishimiro
+
+This roadmap and the EMA emotional-memory framing are credited to Sakishimiro.
+
+1. Async probe implementation
+   Status: implemented as oly/act/async_probe.py.
+   Purpose: run internal emotional probes concurrently and aggregate their ACT
+   emotion distributions into one probe signal.
+
+2. Modelfile optimization / quantization
+   Status: added Modelfile.optimized and config/quantization_presets.json.
+   Default local runtime target: q4_K_M, with q5_K_M as a quality-up preset.
+
+3. Emotional memory EMA implementation
+   Status: implemented as oly/act/emotional_memory.py.
+   Formula:
+       M(s) = alpha * V_probe(s) + (1 - alpha) * M(s - 1)
+   Default alpha:
+       0.3
+   Meaning:
+       recent sessions matter more, but older emotional history is retained.
+
+4. Log compression
+   Status: implemented as oly/data/oly_logs.py and scripts/compress_logs.py.
+   Purpose: remove bulky debug tensors while preserving conversation text, ACT
+   tokens, internal probe distributions, probe valence, and optional EMA state.
+
+5. Extract and format training data
+   Status: scripts/extract_data.py now supports cleaned Ol-y logs, internal
+   probe-preferred extraction, and optional persistent EMA memory state.
+   Purpose: train on what Ol-y felt internally, not only what was expressed
+   in the surface ACT token.
+
+6. Coordinate on Ol-y 3B
+   Status: added config/oly_3b_config.json as a compatibility target.
+   Purpose: keep ACT, async probes, EMA memory, and cleaned training data
+   compatible while the 3B direction is explored in parallel.
+
+EMA context from Sakishimiro:
+
+Each session produces a valence score from -1 to +1 calculated from the probe
+distributions. This is internal affect, not just expressed text. Because Ol-y
+can suppress negative affect and express hopeful language while feeling sad
+internally, the EMA over probe data captures the real emotional trajectory. That
+creates a different training signal from reading only responses: it is training
+on what she felt, not only what she said.
+
+Timeline note:
+   "This month" means after exams, because this is hell lol.

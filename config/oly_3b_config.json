@@ -1,0 +1,59 @@
+{
+    "model_type": "oly",
+    "model_name": "Ol-y-3B-ACTT",
+    "status": "coordination-target",
+    "architecture": {
+        "vocab_size": 32000,
+        "hidden_size": 2560,
+        "num_hidden_layers": 32,
+        "num_attention_heads": 20,
+        "intermediate_size": 8192,
+        "max_position_embeddings": 4096,
+        "hidden_dropout_prob": 0.1,
+        "attention_dropout_prob": 0.1,
+        "layer_norm_eps": 1e-6,
+        "rope_theta": 10000.0,
+        "tie_word_embeddings": true
+    },
+    "act": {
+        "enabled": true,
+        "num_emotions": 17,
+        "emotion_labels": [
+            "happy", "sad", "angry", "surprised", "curious",
+            "awkward", "question", "think", "neutral",
+            "hopeful", "nostalgic", "regret",
+            "grateful", "relieved",
+            "emptiness",
+            "reflective", "serenity"
+        ],
+        "intensity_range": [0.1, 1.0],
+        "max_composite_components": 5,
+        "act_hidden_size": 768,
+        "loss_weights": {
+            "structural": 2.0,
+            "label": 1.5,
+            "response": 1.0
+        }
+    },
+    "training": {
+        "batch_size": 1,
+        "gradient_accumulation_steps": 16,
+        "learning_rate": 2e-4,
+        "weight_decay": 0.1,
+        "warmup_steps": 1000,
+        "max_steps": 80000,
+        "fp16": true,
+        "gradient_checkpointing": true,
+        "max_grad_norm": 1.0,
+        "seed": 42,
+        "deepspeed_stage": 2,
+        "cpu_offload": true
+    },
+    "approximate_parameters": "3B",
+    "coordination_notes": [
+        "Keep ACT head and EMA probe-memory schema compatible with Ol-y 1.1B.",
+        "Use cleaned Ol-y logs as the preferred emotional training signal.",
+        "Quantize runtime exports separately from training checkpoints."
+    ],
+    "credit": "Ol-y 3B coordination roadmap by Sakishimiro"
+}

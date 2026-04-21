@@ -48,6 +48,7 @@ The 17-emotion taxonomy includes: `happy`, `sad`, `angry`, `surprised`, `curious
 │   └── claude_api/claude_act.py # Claude API + ACT
 ├── scripts/                   # Executable scripts
 │   ├── extract_data.py        # Data extraction
+│   ├── compress_logs.py       # Ol-y log cleanup + EMA state
 │   ├── train.py               # Training script
 │   ├── train_tokenizer.py     # Tokenizer training
 │   └── run_all.py             # One-click pipeline
@@ -83,6 +84,33 @@ pip install -r requirements.txt
 ```bash
 python scripts/extract_data.py --output data/train.jsonl --num-synthetic 10000
 ```
+
+With cleaned Ol-y logs and persistent internal emotional memory:
+
+```bash
+python scripts/compress_logs.py --input logs/raw --output logs/clean --memory-state data/emotional_memory.json
+python scripts/extract_data.py --output data/train.jsonl --oly-logs logs/clean --memory-state data/emotional_memory.json
+```
+
+By default, Ol-y log extraction prefers internal probe distributions over the
+surface ACT token, so training can follow what Ol-y felt internally rather
+than only what she expressed.
+
+Runtime EMA memory can also be attached directly to the main model:
+
+```python
+from oly.act.emotional_memory import EmotionalMemoryEMA
+from oly.model.transformer import OlyForCausalLM
+
+memory = EmotionalMemoryEMA.load("data/emotional_memory.json")
+model.set_emotional_memory(memory)
+result = model.generate(input_ids, emit_act=True, memory_session_id="session-001")
+memory.save("data/emotional_memory.json")
+```
+
+The core `forward` path stays a normal training/inference path. During
+`generate`, the integrated ACT head runs first; when memory is attached, its
+emotion probability distribution updates the EMA state.
 
 ### 3. Train Tokenizer
 
@@ -144,6 +172,15 @@ L = λ₁·L_struct + λ₂·L_label + λ₃·L_resp
 ```
 
 Where λ₁=2.0, λ₂=1.5, λ₃=1.0 — structural compliance is highest priority.
+
+## Roadmap Additions
+
+- Async probes: `oly/act/async_probe.py`
+- EMA emotional memory: `oly/act/emotional_memory.py`
+- Log compression: `oly/data/oly_logs.py`, `scripts/compress_logs.py`
+- Quantized runtime target: `Modelfile.optimized`, `config/quantization_presets.json`
+- Ol-y 3B coordination target: `config/oly_3b_config.json`
+- Credited roadmap text: `ROADMAP_SAKISHIMIRO.txt`
 
 ## License
 
