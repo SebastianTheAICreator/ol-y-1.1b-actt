@@ -42,6 +42,10 @@ import random
 import argparse
 from typing import List, Dict, Tuple, Optional
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -776,7 +780,14 @@ def save_dataset(samples: List[Dict], output_path: str, split_ratio: float = 0.9
     print(f"[Data] Saved {len(train_samples)} training samples to {train_path}")
 
     # Save validation set
-    val_path = output_path.replace("train", "val")
+    output_dir = os.path.dirname(output_path) or "."
+    output_name = os.path.basename(output_path)
+    if "train" in output_name:
+        val_name = output_name.replace("train", "val", 1)
+    else:
+        root, ext = os.path.splitext(output_name)
+        val_name = f"{root}_val{ext or '.jsonl'}"
+    val_path = os.path.join(output_dir, val_name)
     with open(val_path, "w", encoding="utf-8") as f:
         for sample in val_samples:
             f.write(json.dumps(sample, ensure_ascii=False) + "\n")

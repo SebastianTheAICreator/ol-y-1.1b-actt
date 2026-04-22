@@ -34,6 +34,10 @@ import argparse
 import time
 import json
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
+
 # Project root directory
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(PROJECT_ROOT)
@@ -114,8 +118,9 @@ def check_system():
         import torch
         if torch.cuda.is_available():
             gpu_name = torch.cuda.get_device_name(0)
-            vram_total = torch.cuda.get_device_properties(0).total_mem / (1024**3)
-            vram_free = (torch.cuda.get_device_properties(0).total_mem - torch.cuda.memory_allocated(0)) / (1024**3)
+            total_memory = torch.cuda.get_device_properties(0).total_memory
+            vram_total = total_memory / (1024**3)
+            vram_free = (total_memory - torch.cuda.memory_allocated(0)) / (1024**3)
             print(f"\n  GPU:     {gpu_name}")
             print(f"  VRAM:    {vram_total:.1f} GB total, {vram_free:.1f} GB free")
             print(f"  CUDA:    {torch.version.cuda}")
@@ -227,6 +232,16 @@ Examples:
                         help="Skip tokenizer training (use existing)")
     parser.add_argument("--skip-tests", action="store_true",
                         help="Skip pre-training test validation")
+    parser.add_argument("--pretrain-train-steps", type=int, default=12,
+                        help="Tiny mini-training steps for the synthetic pre-train check")
+    parser.add_argument("--pretrain-eval-batches", type=int, default=4,
+                        help="Evaluation batches for the synthetic pre-train check")
+    parser.add_argument("--pretrain-batch-size", type=int, default=4,
+                        help="Batch size for the synthetic pre-train check")
+    parser.add_argument("--pretrain-print-every", type=int, default=3,
+                        help="Print tiny training metrics every N synthetic steps")
+    parser.add_argument("--pretrain-generation-tokens", type=int, default=6,
+                        help="Generated tokens in the synthetic preview")
     parser.add_argument("--test-only", action="store_true",
                         help="Only run tests, do not train")
     parser.add_argument("--data-only", action="store_true",
@@ -290,13 +305,16 @@ Examples:
     if not args.skip_tests:
         current_step += 1
         test_cmd = (
-            f"{sys.executable} -m pytest tests/test_oly/ -v "
-            f"--tb=short -q -x "
-            f"-m 'not slow'"
+            f"{sys.executable} scripts/pretrain_synthetic_check.py "
+            f"--train-steps {args.pretrain_train_steps} "
+            f"--eval-batches {args.pretrain_eval_batches} "
+            f"--batch-size {args.pretrain_batch_size} "
+            f"--print-every {args.pretrain_print_every} "
+            f"--generation-tokens {args.pretrain_generation_tokens}"
         )
         rc = run_command(
             test_cmd,
-            "Running tests on synthetic data (pre-training validation)",
+            "Running synthetic pre-training integration check",
             current_step, total_steps,
             check=False,
         )

@@ -163,6 +163,18 @@ print(result["intensity"])   # 0.7
 python -m pytest tests/ -v
 ```
 
+Before a real training run, use the fast synthetic integration check:
+
+```bash
+python scripts/pretrain_synthetic_check.py
+```
+
+It exercises ACT parsing, synthetic data, Ol-y log extraction, async probes,
+EMA memory, tokenizer training, model forward/generation, and checkpoint
+roundtrip without downloading external datasets. It also runs a tiny mini-train
+diagnostic and prints before/after loss, ACT accuracy, intensity error,
+prediction examples, and generation preview.
+
 ## ACT Loss Formulation
 
 Training uses the decomposed loss from Section 5 of the paper:
